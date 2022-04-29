@@ -1,32 +1,12 @@
-/* import React from 'react'
+import React from 'react'
+import { Button } from 'antd';
+import { Outlet } from 'react-router-dom'
 
-function App () {
-    return <h2>App</h2>
-}
-
-export default App */
-
-import React, { Component, Fragment } from 'react'
-
-export default class App extends Component {
-    state = {
-        num: 1
-    }
-
-    addNum(){
-        this.setState(
-            {num: this.state.num+1},
-            () => {
-                console.log(this.state.num);
-            })
-    }
-
-    render() {
-        return (
-            <Fragment>
-                <h2>数字为：{this.state.num}</h2>
-                <button onClick={this.addNum.bind(this)}>累加</button>
-            </Fragment>
-        )
-    }
+export default function App() {
+    return (
+        <div>
+            <Button type="primary">Primary Button</Button>
+            <Outlet></Outlet>
+        </div>
+    )
 }
