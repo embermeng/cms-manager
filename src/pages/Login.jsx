@@ -4,32 +4,33 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import {Link, useNavigate} from 'react-router-dom'
 import "./less/Login.less"
 import logoImg from '../assets/logo.png'
-// import {LoginApi} from '../request/api'
+import {LoginApi} from '../request/api'
 
 export default function Login() {
   const navigate = useNavigate()
 
   const onFinish = (values) => {
-    // LoginApi({
-    //   username: values.username,
-    //   password: values.password
-    // }).then(res=>{
-    //   if(res.errCode===0){
-    //     message.success(res.message)
-    //     // 存储数据
-    //     localStorage.setItem('avatar', res.data.avatar)
-    //     localStorage.setItem('cms-token', res.data['cms-token'])
-    //     localStorage.setItem('editable', res.data.editable)
-    //     localStorage.setItem('player', res.data.player)
-    //     localStorage.setItem('username', res.data.username)
-    //     // 跳转到根路径
-    //     setTimeout(()=>{
-    //       navigate('/')
-    //     }, 1500)
-    //   }else{
-    //     message.error(res.message)
-    //   }
-    // })
+    LoginApi({
+      username: values.username,
+      password: values.password
+    }).then(res=>{
+      console.log(res);
+      if (res.errCode === 0){
+        message.success(res.message)
+        // 存储数据
+        localStorage.setItem('avatar', res.data.avatar)
+        localStorage.setItem('cms-token', res.data['cms-token'])
+        localStorage.setItem('editable', res.data.editable)
+        localStorage.setItem('player', res.data.player)
+        localStorage.setItem('username', res.data.username)
+        // 跳转到根路径
+        setTimeout(() => {
+          navigate('/')
+        }, 2000);
+      }else{
+        message.error(res.message)
+      }
+    })
   };
 
   return (
