@@ -31,7 +31,7 @@ export default function Register() {
 
   return (
     <div className='login'>
-      <div className='login_container'>
+      <div className='login_box'>
         <img src={logo} alt="" />
         <Form
           name="basic"
