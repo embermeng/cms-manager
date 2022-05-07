@@ -4,29 +4,29 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import './less/Login.less'
 import logo from '../assets/logo.png'
-// import { RegisterApi } from '../request/api';
+import { RegisterApi } from '../request/api';
 
 export default function Register() {
   const navigate = useNavigate()
 
   const onFinish = (values) => {
-    // console.log('Success:', values);
-    // RegisterApi({
-    //   username: values.username,
-    //   password: values.password
-    // }).then(
-    //   (res) => {
-    //     if(res.errCode === 0){
-    //       message.success(res.message)
-    //       // 跳到登录页
-    //       setTimeout(() => {
-    //         navigate('/login')
-    //       }, 1000);
-    //     }else{
-    //       message.error(res.message)
-    //     }
-    //   }
-    // )
+    console.log('Success:', values);
+    RegisterApi({
+      username: values.username,
+      password: values.password
+    }).then(
+      (res) => {
+        if(res.errCode === 0){
+          message.success(res.message)
+          // 跳到登录页
+          setTimeout(() => {
+            navigate('/login')
+          }, 1000);
+        }else{
+          message.error(res.message)
+        }
+      }
+    )
   };
 
   return (
