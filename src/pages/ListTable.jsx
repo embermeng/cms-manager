@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Table, Button, Space } from 'antd';
 import "./less/ListTable.less"
-import { Link } from 'react-router-dom';
+import moment from 'moment';
 import { ArticleListApi } from '../request/api';
 
 // 使用表格做list
@@ -13,43 +13,65 @@ export default function ListTable() {
             title: 'John Brown',
             subTitle: 'asd',
             date: '32',
+            titleData: ['John Brown', 'asd']
         }
     ])
+    // 分页配置
+    const [pagination, setPagination] = useState({ current: 1, pageSize: 2, total: 10 })
 
-    // 请求文章列表
-    useEffect(() => {
-        ArticleListApi().then((res) => {
+    // 提取请求的代码
+    const getArticleList = (current, pageSize) => {
+        ArticleListApi({
+            num: current,
+            count: pageSize
+        }).then((res) => {
             if (res.errCode === 0) {
-                console.log(res.data.arr);
+                // 更改pagination
+                let {num, count, total} = res.data
+                setPagination({
+                    current: num,
+                    pageSize: count,
+                    total
+                })
                 let newData = JSON.parse(JSON.stringify(res.data.arr))
                 /* 
                     1. 要给每个数组项加key，让key=id
-                    2. 需要有一套标签结构，赋予给一个属性（或者把title和subTitle整到一个对象里）
+                    2. 需要有一套标签结构，赋予给一个属性（或者把title和subTitle整到一个数组里）（又或者去掉colums中某个列的dataIndex属性，这样那个列拿到的数据就是完整的）
                 */
                 newData.forEach((item) => {
                     item.key = item.id
-                    item.titleData = [
-                        item.title,
-                        item.subTitle
-                    ]
+                    item.date = moment(item.date).format('YYYY-MM-DD hh:mm:ss')
                 })
-                console.log('处理后的数据', newData);
+                // newData = [...newData, ...newData, ...newData]
                 setTableData(newData)
             }
         })
+    }
+
+
+    // 请求文章列表
+    useEffect(() => {
+        getArticleList(pagination.current, pagination.pageSize)
     }, [])
+
+    // 分页的函数
+    const pageChange = (arg) => {
+        console.log(arg);
+        getArticleList(arg.current, arg.pageSize)
+    }
 
     // 每一列
     const columns = [
         {
-            dataIndex: 'titleData',
             key: 'titleData',
-            render: titles => (
-                <>
-                    <Link className='table_title' to={'/'}>{titles[0]}</Link>
-                    <p style={{ color: '#999' }}>{titles[1]}</p>
-                </>
-            ),
+            render: datas => {
+                return (
+                    <>
+                        <a className='table_title' href={'http://codesohigh.com:8765/article/' + datas.id} target="_blank">{datas.title}</a>
+                        <p style={{ color: '#999' }}>{datas.subTitle}</p>
+                    </>
+                )
+            },
             width: '70%'
         },
         {
@@ -58,18 +80,26 @@ export default function ListTable() {
         },
         {
             key: 'action',
-            render: () => (
-                <Space size="middle">
-                    <Button type="primary">编辑</Button>
-                    <Button type="primary" danger>删除</Button>
-                </Space>
-            ),
+            render: (text) => {
+                return (
+                    <Space size="middle">
+                        <Button type="primary" onClick={() => { console.log(text.id); }}>编辑</Button>
+                        <Button type="primary" onClick={() => { console.log(text.id); }} danger>删除</Button>
+                    </Space>
+                )
+            },
         },
     ];
 
     return (
         <div className='list_table'>
-            <Table columns={columns} dataSource={tableData} showHeader={false} />
+            <Table
+                columns={columns}
+                dataSource={tableData}
+                showHeader={false}
+                onChange={pageChange}
+                pagination={pagination}
+            />
         </div>
     )
 }
