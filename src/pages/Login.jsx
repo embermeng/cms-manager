@@ -25,7 +25,7 @@ export default function Login() {
         localStorage.setItem('username', res.data.username)
         // 跳转到根路径
         setTimeout(() => {
-          navigate('/')
+          navigate('/list')
         }, 2000);
       }else{
         message.error(res.message)

@@ -11,7 +11,6 @@ body {
 
 #app {
     height: 100vh;
-
 }
 
 header {
@@ -54,6 +53,14 @@ header {
 
     .container_box {
         flex: 1;
+        box-sizing: border-box;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+
+        .container_content {
+            flex: 1
+        }
     }
 }
 
