@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import {useParams} from 'react-router-dom'
 import { PageHeader, Button, Modal, Form, Input, Checkbox } from 'antd';
 import moment from 'moment';
 import E from 'wangeditor'
@@ -10,6 +11,8 @@ export default function Edit() {
 	const [content, setContent] = useState('')
 	const [isModalVisible, setIsModalVisible] = useState(false);
 	const [form] = Form.useForm();
+	const params = useParams()
+	console.log(params);
 
 	// 对话框点击提交
 	const handleOk = () => {
@@ -34,14 +37,6 @@ export default function Edit() {
 			});
 	}
 
-	const onFinish = (values) => {
-		console.log('Success:', values);
-	};
-
-	const onFinishFailed = (errorInfo) => {
-		console.log('Failed:', errorInfo);
-	};
-
 	useEffect(() => {
 		editor = new E('#div1')
 		editor.config.onchange = (newHtml) => {
@@ -60,7 +55,7 @@ export default function Edit() {
 		<div>
 			<PageHeader
 				ghost={false}
-				onBack={() => window.history.back()}
+				onBack={params.id ? () => window.history.back() : null}
 				title="文章编辑"
 				subTitle={"当前日期：" + moment(new Date()).format("YYYY-MM-DD")}
 				extra={<Button key="1" type="primary" onClick={() => setIsModalVisible(true)}>提交文章</Button>}
@@ -77,8 +72,6 @@ export default function Edit() {
 					wrapperCol={{
 						span: 21,
 					}}
-					onFinish={onFinish}
-					onFinishFailed={onFinishFailed}
 					autoComplete="off"
 				>
 					<Form.Item

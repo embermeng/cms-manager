@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import { List, Skeleton, Pagination, Button } from 'antd';
 import { ArticleListApi } from '../request/api';
 import moment from 'moment';
@@ -9,6 +10,7 @@ export default function ListList() {
     const [total, setTotal] = useState(0)
     const [current, setCurrent] = useState(1)
     const [pageSize, setPageSize] = useState(10)
+    const navigate = useNavigate()
 
     // 请求封装
     const getList = (num) => {
@@ -45,8 +47,8 @@ export default function ListList() {
                     return (
                         <List.Item
                             actions={[
-                                <Button type='primary' onClick={() => { console.log(item.id); }}>编辑</Button>,
-                                <Button type='danger' onClick={() => { console.log(item.id); }}>删除</Button>
+                                <Button type='primary' onClick={() => navigate('/edit/' + item.id)}>编辑</Button>,
+                                <Button type='danger' onClick={() => console.log(item.id)}>删除</Button>
                             ]}
                         >
                             <Skeleton loading={false}>
