@@ -19,7 +19,7 @@ const BaseRouter = () => {
         <Router>
             <Routes>
                 <Route path='/' element={<App />}>
-                    <Route path='/list' element={<ListTable />}></Route>
+                    <Route path='/list' element={<ListList />}></Route>
                     <Route path='/edit' element={<Edit />}></Route>
                     <Route path='/means' element={<Means />}></Route>
                 </Route>

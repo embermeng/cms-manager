@@ -17,7 +17,7 @@ export default function ListTable() {
         }
     ])
     // 分页配置
-    const [pagination, setPagination] = useState({ current: 1, pageSize: 2, total: 10 })
+    const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 10 })
 
     // 提取请求的代码
     const getArticleList = (current, pageSize) => {
