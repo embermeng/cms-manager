@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from 'react'
-import {useParams} from 'react-router-dom'
-import { PageHeader, Button, Modal, Form, Input, Checkbox } from 'antd';
+import { useParams, useNavigate, useLocation } from 'react-router-dom'
+import { PageHeader, Button, Modal, Form, Input, Checkbox, message } from 'antd';
 import moment from 'moment';
 import E from 'wangeditor'
-import {ArticleAddApi} from '../request/api'
+import { ArticleAddApi, ArticleSearchApi, ArticleUpdateApi } from '../request/api'
 
 let editor = null
 
 export default function Edit() {
 	const [content, setContent] = useState('')
+	const [title, setTitle] = useState('')
+	const [subTitle, setSubTitle] = useState('')
 	const [isModalVisible, setIsModalVisible] = useState(false);
 	const [form] = Form.useForm();
 	const params = useParams()
-	console.log(params);
+	const navigate = useNavigate()
+	const location = useLocation()
 
 	// 对话框点击提交
 	const handleOk = () => {
@@ -21,16 +24,37 @@ export default function Edit() {
 			.validateFields() // 校验字段
 			.then((values) => {
 				// form.resetFields(); // 重置字段
-				let {title, subTitle} = values
-				console.log(content);
-				// 请求
-				ArticleAddApi({
-					title,
-					subTitle,
-					content
-				}).then((res) => {
-					console.log(res);
-				})
+				let { title, subTitle } = values
+				// 地址栏有id代表现在要更新文章
+				if (params.id) {
+					// 更新文章
+					ArticleUpdateApi({
+						title,
+						subTitle,
+						content,
+						id: params.id
+					}).then((res) => {
+						if (res.errCode === 0) {
+							message.success(res.message)
+							// 调回list页面
+							navigate('/list')
+						} else {
+							message.error(res.message)
+						}
+						// 关闭对话框
+						setIsModalVisible(false)
+					})
+				} else {
+					// 添加文章请求
+					ArticleAddApi({
+						title,
+						subTitle,
+						content
+					}).then((res) => {
+						console.log(res);
+					})
+				}
+
 			})
 			.catch(() => {
 				return
@@ -44,12 +68,24 @@ export default function Edit() {
 		}
 		editor.create()
 
+		// 根据地址栏id做请求
+		if (params.id) {
+			ArticleSearchApi({ id: params.id }).then((res) => {
+				if (res.errCode === 0) {
+					let { title, subTitle, content } = res.data
+					editor.txt.html(content)
+					setTitle(title)
+					setSubTitle(subTitle)
+				}
+			})
+		}
+
 		// componentWillUnmount
 		return () => {
 			// 组件销毁时销毁编辑器
 			editor.destroy()
 		}
-	}, [])
+	}, [location.pathname])
 
 	return (
 		<div>
@@ -73,6 +109,7 @@ export default function Edit() {
 						span: 21,
 					}}
 					autoComplete="off"
+					initialValues={{ title, subTitle }}
 				>
 					<Form.Item
 						label="标题"

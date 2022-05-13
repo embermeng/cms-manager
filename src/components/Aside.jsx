@@ -9,9 +9,9 @@ export default function Aside() {
     const [defaultKey, setDefaultKey] = useState('')
     // 一般加个空数组是为了模仿componentDidMount
     useEffect(() => {
-        let key = location.pathname.replaceAll('/', '')
+        let key = location.pathname.split('/')[1]
         setDefaultKey(key)
-    }, [])
+    }, [location.pathname])
     
     const items = [
         getItem('查看文章列表', 'list', <ReadOutlined />),
