@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
-import { PageHeader, Button, Modal, Form, Input, Checkbox, message } from 'antd';
+import { PageHeader, Button, Modal, Form, Input, message } from 'antd';
 import moment from 'moment';
 import E from 'wangeditor'
 import { ArticleAddApi, ArticleSearchApi, ArticleUpdateApi } from '../request/api'
@@ -16,6 +16,20 @@ export default function Edit() {
 	const params = useParams()
 	const navigate = useNavigate()
 	const location = useLocation()
+
+	const proArticle = (res) => {
+		// 关闭对话框
+		setIsModalVisible(false)
+		if (res.errCode === 0) {
+			message.success(res.message)
+			// 跳回list页面
+			setTimeout(() => {
+				navigate('/list')
+			}, 1000);
+		} else {
+			message.error(res.message)
+		}
+	}
 
 	// 对话框点击提交
 	const handleOk = () => {
@@ -34,15 +48,7 @@ export default function Edit() {
 						content,
 						id: params.id
 					}).then((res) => {
-						if (res.errCode === 0) {
-							message.success(res.message)
-							// 调回list页面
-							navigate('/list')
-						} else {
-							message.error(res.message)
-						}
-						// 关闭对话框
-						setIsModalVisible(false)
+						proArticle(res)
 					})
 				} else {
 					// 添加文章请求
@@ -51,7 +57,7 @@ export default function Edit() {
 						subTitle,
 						content
 					}).then((res) => {
-						console.log(res);
+						proArticle(res)
 					})
 				}
 

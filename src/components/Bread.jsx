@@ -20,12 +20,13 @@ export default function Bread() {
                 setBreadName('修改资料')
                 break
             default:
+                setBreadName(pathname.includes('edit') ? '文章编辑' : '')
                 break
         }
     }, [pathname])
     return (
-        <Breadcrumb style={{height: '30px', lineHeight: '30px'}}>
-            <Breadcrumb.Item  href='/'>
+        <Breadcrumb style={{ height: '30px', lineHeight: '30px' }}>
+            <Breadcrumb.Item href='/'>
                 <HomeOutlined />
             </Breadcrumb.Item>
             <Breadcrumb.Item>{breadName}</Breadcrumb.Item>

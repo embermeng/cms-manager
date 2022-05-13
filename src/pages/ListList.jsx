@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { List, Skeleton, Pagination, Button } from 'antd';
-import { ArticleListApi } from '../request/api';
+import { List, Skeleton, Pagination, Button, message } from 'antd';
+import { ArticleListApi, ArticleDelApi } from '../request/api';
 import moment from 'moment';
 
 // 使用列表做list
@@ -10,9 +10,10 @@ export default function ListList() {
     const [total, setTotal] = useState(0)
     const [current, setCurrent] = useState(1)
     const [pageSize, setPageSize] = useState(10)
+    const [update, setUpdate] = useState(1)
     const navigate = useNavigate()
 
-    // 请求封装
+    // 获取文章请求封装
     const getList = (num) => {
         ArticleListApi({
             num,
@@ -28,10 +29,30 @@ export default function ListList() {
             }
         })
     }
+
+    // 删除文章请求
+    const delList = (id) => {
+        ArticleDelApi({
+            id
+        }).then((res) => {
+            if (res.errCode === 0) {
+                message.success(res.message)
+                // 重新请求数据或者重新刷页面或增加变量的监测
+                setUpdate(update++)
+            } else {
+                message.error(res.message)
+            }
+        })
+    }
     // 请求列表数据
     useEffect(() => {
         getList(current)
     }, [])
+
+    // componentDidUpdate
+    useEffect(() => {
+        getList(current)
+    }, [update])
 
     const pageChange = (pages) => {
         getList(pages)
@@ -48,7 +69,7 @@ export default function ListList() {
                         <List.Item
                             actions={[
                                 <Button type='primary' onClick={() => navigate('/edit/' + item.id)}>编辑</Button>,
-                                <Button type='danger' onClick={() => console.log(item.id)}>删除</Button>
+                                <Button type='danger' onClick={() => delList(item.id)}>删除</Button>
                             ]}
                         >
                             <Skeleton loading={false}>

@@ -18,6 +18,14 @@ export const ArticleSearchApi = (params) => request.get(`/article/${params.id}`)
 // 重新编辑文章
 export const ArticleUpdateApi = (params) => request.put('/article/update', params)
 
+// 删除文章
+export const ArticleDelApi = (params) => request.post('/article/remove', params)
+
+// 获取用户资料
+export const UserInfoApi = () => request.get(`/info`)
+
+// 修改用户资料
+export const UserInfoChgApi = (params) => request.put('/info', params)
 
 // axios
 /* axios.get({
